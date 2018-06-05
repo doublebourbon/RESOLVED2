@@ -66,12 +66,12 @@ pmid = []
 drugs_data = []
 
 
-file = FR("../PUBMED_DATA/pubmedNdrugs.txt", sep = '\t', suppress_newlines = True, skiplines = 1)
+file = FR("../PUBMED_DATA/pubmedNdrugs_2.txt", sep = '\t', suppress_newlines = True, skiplines = 0, encoding = "utf-16")
 
 for line in file.iter():
-	pmid.append(char_strip(line[1],"^\"\"$"))
-	a = char_strip(line[2],"\"")
-	if a!="NA":
+	pmid.append(line[0])
+	a = line[1]
+	if a!="NA" or a!="":
 		drugs_data.append(a)
 
 

@@ -2,7 +2,7 @@ from utils import File_Reader as FR
 
 
 
-charstrip = "^ ^\" $\"$"
+charstrip = "^|^\"| $|\"$"
 nosym_file = FR("../DRUG_LISTS/tbl_Abst_drug_LIST_noSYMBOLS 2018 05 17.txt", sep = "\t", suppress_newlines = True, skiplines = 1, strip_chars_pattern = charstrip, encoding = "utf-16")
 supp_file  = FR("../DRUG_LISTS/tbl_Abst_drug_LIST_SUPP 2018 05 31.txt", sep = "\t", suppress_newlines = True, skiplines = 1, strip_chars_pattern = charstrip, encoding = "utf-16")
 dlist_file = FR("../DRUG_LISTS/tbl_Abst_drug_vs_symbols_match - DRUG_LIST 2018 05 17.txt", sep = "\t", suppress_newlines = True, skiplines = 1, strip_chars_pattern = charstrip, encoding = "utf-16")
