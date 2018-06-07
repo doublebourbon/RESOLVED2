@@ -1,26 +1,28 @@
 import sys
 import re
+import os
 
 class File_Reader():
 	"""Classe de lecture de fichiers text simples (txt, csv, tsv...).
-	Prend en compte les paramètres suivants:
-		-file_name: chemin du fichier à lire
-		-sep: séparateur de champ, aucun par defaut. En cas de separateur, chaque ligne sera une liste python avec un element pour chaque champ
-		-suppress_newlines: si on veut enlever les \n à la fin de chaque ligne, vrai par defaut
-		-skiplines: nombre de lignes à ignorer en début de fichier, 0 par defaut
-		-strip_chars_pattern: expression reguliere pour enlever certains caracteres ou expressions (ex: expace en debut de ligne), auncune par defaut
-		-encoding: l'encodage du fichier, par defaut utf8
+	
+	:param file_name: chemin du fichier à lire
+	:param sep: séparateur de champ, aucun par defaut. En cas de separateur, chaque ligne sera une liste python avec un element pour chaque champ
+	:param suppress_newlines: si on veut enlever les \n à la fin de chaque ligne, vrai par defaut
+	:param skiplines: nombre de lignes à ignorer en début de fichier, 0 par defaut
+	:param strip_chars_pattern: expression reguliere pour enlever certains caracteres ou expressions (ex: expace en debut de ligne), auncune par defaut
+	:param encoding: l'encodage du fichier, par defaut utf8
 
-	Utilisation:
-		#Initialiser avec le chemin du fichier et les parametres voulus
-		my_file = File_Reader("chemin/vers/lefichier/")
-		#lecture ligne par ligne
-		for line in my_file.iter():
-			do_something(line)
-		#OU recuperation de chaque ligne dans une liste
-		all_lines = my_file.readlines()
-		#Une fois le fichier parcouru, il faut reutiliser cette classe si l'on veut relire le fichier.
-		"""
+	:example:
+
+	#Initialiser avec le chemin du fichier et les parametres voulus
+	my_file = File_Reader("chemin/vers/lefichier/")
+	#lecture ligne par ligne
+	for line in my_file.iter():
+		do_something(line)
+	#OU recuperation de chaque ligne dans une liste
+	all_lines = my_file.readlines()
+	#Une fois le fichier parcouru, il faut reutiliser cette classe si l'on veut relire le fichier.
+	"""
 	def __init__(self, file_name, sep = "", suppress_newlines = True, skiplines = 0, strip_chars_pattern = "", encoding = ""):
 		self.file_name = file_name
 		self.sep = sep
@@ -71,11 +73,10 @@ class File_Reader():
 class Task_Follower():
 	"""Mini barre de progression en pourcentage pour les executions linéaire longues.
 
-	Utilisation:
-		#initialiser avec le nombre d'opérations
-		t = Task_Follower(count)
-		#incrémenter l'avencement
-		t.step()"""
+	#initialiser avec le nombre d'opérations
+	t = Task_Follower(count)
+	#incrémenter l'avencement
+	t.step()"""
 	def __init__(self, taskcount, message = "Completion: "):
 		self.taskcount = taskcount
 		self.done = 0
@@ -100,3 +101,66 @@ class Task_Follower():
 def head(l, start = 0, stop = 5):
 	"""Equivalent de l'outil linux head."""
 	print(l[start:stop])
+
+
+class File_Maker():
+	def __init__(self, path, replace_old = False, olddata_dir = "", version_control = True, encoding = "utf-8", mode = "w", latest_string = "latest"):
+		
+		self.path = path
+		self.file_name = self.get_filename()
+		self.extension = self.get_extension()
+		self.save_dir = self.get_savedir()
+		self.olddata_dir = olddata_dir
+
+		self.replace_old = replace_old
+		self.version_control = version_control
+
+		self.mode = mode
+		self.encoding = encoding
+
+		
+		self.fp = None
+
+		self.original_dir = os.getcwd()
+
+
+	# def setcwd(self, dir):
+	# 	os.chdir(dir)
+
+	def get_filename(self):
+		name = (self.path.split("/")[-1])
+		if '.' in name:
+			name = ".".join(name.split('.')[0:-1])
+		return name
+
+	def get_extension(self):
+		ext = self.path
+		if ".." in ext:
+			ext = self.path.split("..")[-1]
+
+		if '.' in ext:
+			ext = ext.split(".")[-1]
+			return "."+ext
+		return ""
+
+	def get_savedir(self):
+		sd = "/".join(self.path.split("/")[0:-1])
+		return sd
+
+
+	def get_filepointer(self):
+		# self.setcwd(self.original_dir)
+		# self.setcwd(self.save_dir)
+		if self.replace_old and not self.version_control:
+			self.fp = open(self.file_name+self.extension, self.mode, encoding = self.encoding)
+			return self.fp
+
+		if not self.replace_old and self.version_control:
+			self.fp = open(self.file_name, self.mode, encoding = self.encoding)
+			return self.fp
+
+
+
+	def close(self):
+		if self.fp:
+			self.fp.close
