@@ -8,13 +8,14 @@ require(ggplot2)
 # Les resultats peuvent sont encore exploitables car l erreur ne se produit pas avant la 678 ligne
 # et n influence pas notre graphe
 
-citations = read.table(file = "PUBMED_DATA/drug_citation_counter.txt",
+citations = read.table(file = "PUBMED_DATA/drug_counter_2.txt",
                        sep = "\t",
-                       fileEncoding = "utf-16",
+                       encoding = "utf-8",
                        col.names = c("Drug Alias", "Citations in abstracts"),
                        as.is = TRUE,
                        comment.char = "",
-                       quote = "")
+                       quote = ""
+                       )
 
 
 summary(citations)
@@ -22,8 +23,8 @@ summary(citations)
 citations[1:50,]
 
 top50 = citations[1:50,]
-top50[,2] = substr(top50[(nchar(top50[,2]))>20], 1, 15)
-top50[,2]
+top200 = citations[1:200,]
+
 
 
 ggplot(data = top50, aes(x = reorder(Drug.Alias,-Citations.in.abstracts), y = Citations.in.abstracts)) +
@@ -31,4 +32,12 @@ ggplot(data = top50, aes(x = reorder(Drug.Alias,-Citations.in.abstracts), y = Ci
   ylab(label = "Citations in abstracts") +
   xlab(label = "Drug alias") +
   theme(axis.text.x = element_text(angle=90, hjust=1, size=7)) +
-  scale_y_continuous(breaks = c(0,100,10, 25, 40, 70))
+  scale_y_continuous(breaks = c(0,100,10, 40, 70,80, 60, 50, 30, 20))
+
+
+ggplot(data = top200, aes(x = reorder(Drug.Alias,-Citations.in.abstracts), y = Citations.in.abstracts)) +
+  geom_bar(stat="identity", width=0.6, fill="tomato3") +
+  ylab(label = "Citations in abstracts") +
+  xlab(label = "Drug alias") +
+  theme(axis.text.x = element_blank()) +
+  scale_y_continuous(breaks = c(0,100,10, 40, 70,80, 60, 50, 30, 20, 3))
